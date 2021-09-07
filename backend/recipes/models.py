@@ -1,3 +1,4 @@
+from colorfield.fields import ColorField
 from django.contrib.auth import get_user_model
 from django.core.validators import MinValueValidator
 from django.db import models
@@ -9,41 +10,22 @@ from .utils import slugify
 User = get_user_model()
 
 
-class Unit(models.Model):
-    """Dimension units for ingredients"""
-
-    name = models.CharField(
-        verbose_name="название", max_length=128, blank=True, unique=True
-    )
-
-    class Meta:
-        verbose_name = "единица измерения"
-        verbose_name_plural = "единицы измерения"
-
-    def __str__(self):
-        return self.name
-
-
 class Tag(models.Model):
     """Tags model"""
 
     title = models.CharField(
-        verbose_name="название", max_length=250, blank=True, unique=True
+        verbose_name="название", max_length=250, unique=True
     )
-
-    class Badges(models.TextChoices):
-        GREEN = "green", ("green")
-        ORANGE = "orange", ("orange")
-        PURPLE = "purple", ("purple")
-
-    badge_style = models.CharField(
-        verbose_name="стиль тэга", max_length=20, choices=Badges.choices
-    )
+    slug = models.SlugField(max_length=50, unique=True)
+    color = ColorField(default="#FF0000", unique=True)
 
     class Meta:
         verbose_name = "тэг"
         verbose_name_plural = "тэги"
-        indexes = [models.Index(fields=["title"])]
+        indexes = [
+            models.Index(fields=["title"]),
+            models.Index(fields=["slug"]),
+        ]
 
     def __str__(self):
         return self.title
@@ -59,11 +41,8 @@ class Ingredient(models.Model):
     title = models.CharField(
         verbose_name="название ингредиента", max_length=128
     )
-    unit = models.ForeignKey(
-        Unit,
-        verbose_name="единица измерения",
-        on_delete=models.PROTECT,
-        related_name="ingredients",
+    unit = models.CharField(
+        verbose_name="единица измерения", max_length=128, unique=True
     )
 
     class Meta:
@@ -96,7 +75,6 @@ class Recipe(models.Model):
         related_name="recipes",
         through="IngredientForRecipe",
         through_fields=("recipe", "ingredient"),
-        blank=True,
     )
     in_favorites = models.ManyToManyField(
         User,
