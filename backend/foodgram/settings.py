@@ -21,6 +21,7 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "sorl.thumbnail",
     "rest_framework",
+    "rest_framework.authtoken",
     "djoser",
     "recipes",
     "colorfield",

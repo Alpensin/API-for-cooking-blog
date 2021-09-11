@@ -25,6 +25,7 @@ class CustomUserAdmin(UserAdmin):
             },
         ),
     )
+    list_filter = ("email", "username")
 
 
 admin.site.register(User, CustomUserAdmin)
