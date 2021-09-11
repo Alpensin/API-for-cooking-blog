@@ -134,3 +134,4 @@ dmypy.json
 requirements_dev.txt
 run_frontend.sh
 curl_commands.txt
+media/

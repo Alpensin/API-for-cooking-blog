@@ -3,7 +3,6 @@ from django.contrib.auth import get_user_model
 from django.core.validators import MinValueValidator
 from django.db import models
 from django.urls import reverse
-from sorl.thumbnail import ImageField
 
 from .utils import slugify
 
@@ -41,9 +40,7 @@ class Ingredient(models.Model):
     title = models.CharField(
         verbose_name="название ингредиента", max_length=128
     )
-    unit = models.CharField(
-        verbose_name="единица измерения", max_length=128, unique=True
-    )
+    unit = models.CharField(verbose_name="единица измерения", max_length=128)
 
     class Meta:
         verbose_name = "ингредиент"
@@ -65,7 +62,7 @@ class Recipe(models.Model):
         on_delete=models.CASCADE,
         related_name="written_recipes",
     )
-    picture = ImageField(
+    picture = models.ImageField(
         verbose_name="изображение", upload_to="recipe_images/"
     )
     description = models.TextField(verbose_name="текстовое описание")

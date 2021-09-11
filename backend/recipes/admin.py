@@ -1,6 +1,4 @@
 from django.contrib import admin
-from django.template.loader import render_to_string
-from sorl.thumbnail.admin import AdminImageMixin
 
 from .models import Follow, Ingredient, IngredientForRecipe, Recipe, Tag
 
@@ -16,10 +14,9 @@ class IngredientForRecipeInline(admin.TabularInline):
     model = IngredientForRecipe
 
 
-class RecipeAdmin(AdminImageMixin, admin.ModelAdmin):
+class RecipeAdmin(admin.ModelAdmin):
     inlines = (IngredientForRecipeInline,)
     list_display = (
-        "photo",
         "title",
         "author",
         "description",
@@ -30,11 +27,6 @@ class RecipeAdmin(AdminImageMixin, admin.ModelAdmin):
     list_filter = ("title", "author", "ingredients", "tags", "slug")
     empty_value_display = "-пусто-"
     prepopulated_fields = {"slug": ("title",)}
-
-    def photo(self, obj):
-        return render_to_string("utils/thumb.html", {"image": obj.picture})
-
-    photo.allow_tags = True
 
 
 class TagAdmin(admin.ModelAdmin):
