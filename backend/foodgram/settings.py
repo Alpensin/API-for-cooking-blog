@@ -107,12 +107,12 @@ REST_FRAMEWORK = {
     "DEFAULT_FILTER_BACKENDS": [
         "django_filters.rest_framework.DjangoFilterBackend"
     ],
-    "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",  # noqa
+    "DEFAULT_PAGINATION_CLASS": "api.pagination.CustomPageNumberPagination",
     "PAGE_SIZE": ITEMS_PER_PAGE,
 }
 DJOSER = {
     "SERIALIZERS": {
-        "user_create": "api.serializers.UserCustomCreateSerializer",  # noqa
+        "user_create": "api.serializers.UserCustomCreateSerializer",
     },
 }
 
