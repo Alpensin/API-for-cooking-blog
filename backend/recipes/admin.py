@@ -4,9 +4,9 @@ from .models import Follow, Ingredient, IngredientForRecipe, Recipe, Tag
 
 
 class IngredientAdmin(admin.ModelAdmin):
-    list_display = ("pk", "title", "unit")
-    search_fields = ("title",)
-    list_filter = ("unit",)
+    list_display = ("pk", "name", "measurement_unit")
+    search_fields = ("name",)
+    list_filter = ("measurement_unit",)
     empty_value_display = "-пусто-"
 
 
@@ -30,8 +30,8 @@ class RecipeAdmin(admin.ModelAdmin):
 
 
 class TagAdmin(admin.ModelAdmin):
-    search_fields = ("title",)
-    list_filter = ("title",)
+    search_fields = ("name",)
+    list_filter = ("name",)
     empty_value_display = "-пусто-"
 
 

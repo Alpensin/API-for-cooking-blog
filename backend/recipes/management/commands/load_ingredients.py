@@ -12,13 +12,8 @@ class Command(BaseCommand):
         file_path = settings.BASE_DIR.parent / "data/ingredients.csv"
         with open(file_path, "r") as f:
             ingredients_and_units = csv.reader(f)
-            bulk_create_ingredients = list()
             bulk_create_ingredients = (
-                Ingredient(title=ingredient[0], unit=ingredient[1])
+                Ingredient(name=ingredient[0], measurement_unit=ingredient[1])
                 for ingredient in ingredients_and_units
             )
-            # for ingredient in ingredients_and_units:
-            #     ingredient_title, unit_name = ingredient
-            #     ingredient = Ingredient(title=ingredient_title, unit=unit_name)
-            #     bulk_create_ingredients.append(ingredient)
             Ingredient.objects.bulk_create(bulk_create_ingredients)

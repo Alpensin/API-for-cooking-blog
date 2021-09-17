@@ -12,22 +12,22 @@ User = get_user_model()
 class Tag(models.Model):
     """Tags model"""
 
-    title = models.CharField(
+    name = models.CharField(
         verbose_name="название", max_length=250, unique=True
     )
-    slug = models.SlugField(max_length=50, unique=True)
     color = ColorField(default="#FF0000", unique=True)
+    slug = models.SlugField(max_length=50, unique=True)
 
     class Meta:
         verbose_name = "тэг"
         verbose_name_plural = "тэги"
         indexes = [
-            models.Index(fields=["title"]),
+            models.Index(fields=["name"]),
             models.Index(fields=["slug"]),
         ]
 
     def __str__(self):
-        return self.title
+        return self.name
 
     @property
     def css_style(self):
@@ -37,19 +37,21 @@ class Tag(models.Model):
 class Ingredient(models.Model):
     """Model for ingredients"""
 
-    title = models.CharField(
+    name = models.CharField(
         verbose_name="название ингредиента", max_length=128
     )
-    unit = models.CharField(verbose_name="единица измерения", max_length=128)
+    measurement_unit = models.CharField(
+        verbose_name="единица измерения", max_length=128
+    )
 
     class Meta:
         verbose_name = "ингредиент"
         verbose_name_plural = "ингредиенты"
-        indexes = [models.Index(fields=["title"])]
-        ordering = ("title",)
+        indexes = [models.Index(fields=["name"])]
+        ordering = ("name",)
 
     def __str__(self):
-        return self.title
+        return self.name
 
 
 class Recipe(models.Model):
