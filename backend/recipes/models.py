@@ -57,17 +57,17 @@ class Ingredient(models.Model):
 class Recipe(models.Model):
     """Model for recipes"""
 
-    title = models.CharField(verbose_name="название рецепта", max_length=128)
+    name = models.CharField(verbose_name="название рецепта", max_length=128)
     author = models.ForeignKey(
         User,
         verbose_name="автор",
         on_delete=models.CASCADE,
         related_name="written_recipes",
     )
-    picture = models.ImageField(
+    image = models.ImageField(
         verbose_name="изображение", upload_to="recipe_images/"
     )
-    description = models.TextField(verbose_name="текстовое описание")
+    text = models.TextField(verbose_name="текстовое описание")
     ingredients = models.ManyToManyField(
         Ingredient,
         verbose_name="ингредиенты",
@@ -100,15 +100,15 @@ class Recipe(models.Model):
         verbose_name = "рецепт"
         verbose_name_plural = "рецепты"
         indexes = [
-            models.Index(fields=["title"]),
+            models.Index(fields=["name"]),
             models.Index(fields=["slug"]),
             models.Index(fields=["pub_date"]),
         ]
-        unique_together = ["author", "title"]
+        unique_together = ["author", "name"]
         ordering = ("-pub_date",)
 
     def __str__(self):
-        return self.title
+        return self.name
 
     def get_absolute_url(self):
         return reverse("detail", kwargs={"slug": self.slug})

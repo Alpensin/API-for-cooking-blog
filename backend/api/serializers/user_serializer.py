@@ -1,15 +1,14 @@
 from django.contrib.auth import get_user_model
-from djoser.serializers import UserCreateSerializer, UserSerializer
-from recipes.models import Follow
+from djoser.serializers import UserSerializer
 from rest_framework import serializers, validators
+
+from recipes.models import Follow
 
 User = get_user_model()
 
 
-class CustomUserCreateSerializer(UserCreateSerializer):
-    """User creation serializer.
-    Checks email and username are unique.
-    """
+class CustomUserSerializer(UserSerializer):
+    """To provide User info"""
 
     email = serializers.EmailField(
         validators=[validators.UniqueValidator(queryset=User.objects.all())]
@@ -17,22 +16,6 @@ class CustomUserCreateSerializer(UserCreateSerializer):
     username = serializers.CharField(
         validators=[validators.UniqueValidator(queryset=User.objects.all())]
     )
-
-    class Meta:
-        model = User
-        fields = (
-            "email",
-            "id",
-            "username",
-            "first_name",
-            "last_name",
-            "password",
-        )
-
-
-class CustomUserSerializer(UserSerializer):
-    """To provide User info"""
-
     is_subscribed = serializers.SerializerMethodField()
 
     class Meta:

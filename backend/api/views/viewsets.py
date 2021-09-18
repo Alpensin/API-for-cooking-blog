@@ -1,8 +1,9 @@
+from rest_framework import viewsets
+from rest_framework.permissions import AllowAny
+
 from api.filters import IngredientNameFilter
 from api.serializers import IngredientSerializer, TagSerializer
 from recipes.models import Ingredient, Tag
-from rest_framework import viewsets
-from rest_framework.permissions import AllowAny
 
 
 class IngredientViewSet(viewsets.ModelViewSet):

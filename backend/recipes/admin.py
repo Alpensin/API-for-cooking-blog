@@ -17,16 +17,16 @@ class IngredientForRecipeInline(admin.TabularInline):
 class RecipeAdmin(admin.ModelAdmin):
     inlines = (IngredientForRecipeInline,)
     list_display = (
-        "title",
+        "name",
         "author",
-        "description",
+        "text",
         "cooking_time",
         "slug",
     )
-    search_fields = ("title", "author", "description", "slug")
-    list_filter = ("title", "author", "ingredients", "tags", "slug")
+    search_fields = ("name", "author", "text", "slug")
+    list_filter = ("name", "author", "ingredients", "tags", "slug")
     empty_value_display = "-пусто-"
-    prepopulated_fields = {"slug": ("title",)}
+    prepopulated_fields = {"slug": ("name",)}
 
 
 class TagAdmin(admin.ModelAdmin):

@@ -111,13 +111,19 @@ REST_FRAMEWORK = {
     "DEFAULT_PAGINATION_CLASS": "api.pagination.CustomPageNumberPagination",
     "PAGE_SIZE": ITEMS_PER_PAGE,
 }
+
 DJOSER = {
+    "HIDE_USERS": False,
     "SERIALIZERS": {
-        "user_create": "api.serializers.CustomUserCreateSerializer",
+        "user_create": "api.serializers.CustomUserSerializer",
         "user": "api.serializers.CustomUserSerializer",
         "current_user": "api.serializers.CustomUserSerializer",
     },
+    "PERMISSIONS": {
+        "user_list": ["rest_framework.permissions.IsAuthenticatedOrReadOnly"],
+    },
 }
+
 
 MEDIA_URL = "/media/"
 MEDIA_ROOT = BASE_DIR / "media"
