@@ -82,7 +82,9 @@ class Recipe(models.Model):
         blank=True,
     )
     tags = models.ManyToManyField(
-        Tag, verbose_name="тэги", related_name="recipes"
+        Tag,
+        verbose_name="тэги",
+        related_name="recipes",
     )
     cooking_time = models.DecimalField(
         verbose_name="время приготовления",

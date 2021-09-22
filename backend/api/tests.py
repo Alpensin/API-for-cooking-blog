@@ -26,7 +26,7 @@ class UserTests(APITestCase):
 
     def test_user_list_authenticated(self):
         """
-        Ensure we can get users list.
+        Ensure we can get recipes list when authenticated.
         """
         url = reverse("api:users-list")
         user = User.objects.create(username="olivia", email="olivia@ya.ru")
@@ -40,7 +40,7 @@ class UserTests(APITestCase):
 
     def test_user_list_not_authenticated(self):
         """
-        Ensure we can get users list.
+        Ensure we can get recipes list when not authenticated.
         """
         User.objects.create(username="olivia", email="olivia@ya.ru")
         User.objects.create(username="ash", email="ash@ya.ru")

@@ -1,6 +1,9 @@
 import django_filters as filters
+from django.contrib.auth import get_user_model
 
-from recipes.models import Ingredient
+from recipes.models import Ingredient, Recipe
+
+User = get_user_model()
 
 
 class IngredientNameFilter(filters.FilterSet):
@@ -9,3 +12,12 @@ class IngredientNameFilter(filters.FilterSet):
     class Meta:
         model = Ingredient
         fields = ("name", "measurement_unit")
+
+
+class RecipeFilter(filters.FilterSet):
+    author = filters.ModelChoiceFilter(queryset=User.objects.all())
+    tags = filters.AllValuesMultipleFilter(field_name="tags__slug")
+
+    class Meta:
+        model = Recipe
+        fields = ["author", "tags"]
