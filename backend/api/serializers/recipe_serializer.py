@@ -13,6 +13,12 @@ from .tag_serializer import TagSerializer
 from .user_serializer import CustomUserSerializer
 
 
+class BriefRecipeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Recipe
+        fields = ("id", "name", "image", "cooking_time")
+
+
 class IngredientForRecipeSerializer(serializers.ModelSerializer):
     id = serializers.ReadOnlyField(source="ingredient.id")
     name = serializers.ReadOnlyField(source="ingredient.name")
@@ -36,6 +42,7 @@ class RecipeSerializer(serializers.ModelSerializer):
     )
     image = Base64ImageField()
     cooking_time = CustomDecimalField(max_digits=4, decimal_places=1)
+    is_favorited = serializers.SerializerMethodField()
 
     class Meta:
         model = Recipe
@@ -44,6 +51,7 @@ class RecipeSerializer(serializers.ModelSerializer):
             "tags",
             "author",
             "ingredients",
+            "is_favorited",
             "name",
             "image",
             "text",
@@ -55,6 +63,12 @@ class RecipeSerializer(serializers.ModelSerializer):
                 IngredientsAmountIsPovitiveValidator,
             ),
         }
+
+    def get_is_favorited(self, obj):
+        request = self.context.get("request")
+        if request.user.is_anonymous:
+            return False
+        return obj.in_favorites.filter(pk=request.user.pk).exists()
 
     def create(self, validated_data):
         ingredients = validated_data.pop("ingredients")
@@ -97,3 +111,30 @@ class RecipeSerializer(serializers.ModelSerializer):
         instance.save()
 
         return instance
+
+
+class RecipeFavoritesSerializer(serializers.ModelSerializer):
+    user = serializers.PrimaryKeyRelatedField(
+        default=serializers.CurrentUserDefault()
+    )
+
+    class Meta:
+        model = Recipe
+        fields = ("id", "in_favorites")
+
+    def validate(self, data):
+        request = self.context.get("request")
+        recipe = data["recipe"]
+        favorite_exists = recipe.in_favorites.filter(pk=user.pk).exists()
+
+        if request.method == "GET" and favorite_exists:
+            raise serializers.ValidationError(
+                "Рецепт уже добавлен в избранное"
+            )
+
+        return data
+
+    def to_representation(self, instance):
+        request = self.context.get("request")
+        context = {"request": request}
+        return BriefRecipeSerializer(instance, context=context).data

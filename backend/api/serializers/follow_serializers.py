@@ -3,6 +3,7 @@ from rest_framework import serializers
 
 from recipes.models import Follow, Recipe
 
+from .recipe_serializer import BriefRecipeSerializer
 from .user_serializer import CustomUserSerializer
 
 User = get_user_model()
@@ -33,12 +34,6 @@ class FollowSerializer(serializers.ModelSerializer):
                     "Вы уже подписаны на этого автора"
                 )
         return data
-
-
-class FollowerRecipeSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Recipe
-        fields = ("id", "name", "image", "cooking_time")
 
 
 class FollowerSerializer(CustomUserSerializer):
@@ -77,7 +72,7 @@ class FollowerSerializer(CustomUserSerializer):
         if limit is not None:
             queryset = Recipe.objects.filter(author=obj.author)[: int(limit)]
 
-        return FollowerRecipeSerializer(queryset, many=True).data
+        return BriefRecipeSerializer(queryset, many=True).data
 
     def get_recipes_count(self, obj):
         return Recipe.objects.filter(author=obj.author).count()

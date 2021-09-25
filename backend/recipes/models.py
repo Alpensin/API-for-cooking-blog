@@ -1,3 +1,5 @@
+from enum import unique
+
 from colorfield.fields import ColorField
 from django.contrib.auth import get_user_model
 from django.core.validators import MinValueValidator
@@ -106,7 +108,11 @@ class Recipe(models.Model):
             models.Index(fields=["slug"]),
             models.Index(fields=["pub_date"]),
         ]
-        unique_together = ["author", "name"]
+        constraints = [
+            models.UniqueConstraint(
+                fields=["name", "author"], name="unique_name_for_author"
+            ),
+        ]
         ordering = ("-pub_date",)
 
     def __str__(self):
