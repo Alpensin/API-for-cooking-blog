@@ -1,5 +1,6 @@
 from django.db.models import Exists, OuterRef
 from django.http.response import HttpResponse
+from django_filters import rest_framework as filters
 from rest_framework import status, viewsets
 from rest_framework.decorators import action
 from rest_framework.generics import get_object_or_404
@@ -9,11 +10,12 @@ from rest_framework.response import Response
 from api.filters import RecipeFilter
 from api.permissions import IsAuthorOrAdminOrReadOnly
 from api.serializers import (
+    AddRecipeSerializer,
     FavoriteSerializer,
     PurchaseSerializer,
     RecipeSerializer,
 )
-from recipes.models import Favorite, IngredientForRecipe, Purchase, Recipe
+from recipes.models import IngredientForRecipe, Purchase, Recipe
 
 
 class RecipeViewSet(viewsets.ModelViewSet):
@@ -22,27 +24,15 @@ class RecipeViewSet(viewsets.ModelViewSet):
     permission_classes = (IsAuthorOrAdminOrReadOnly,)
     filterset_class = RecipeFilter
 
-    def get_queryset(self):
-        user = self.request.user
+    def get_serializer_class(self):
+        if self.request.method in ("POST", "PUT", "PATCH"):
+            return AddRecipeSerializer
+        return RecipeSerializer
 
-        if user.is_anonymous:
-            return Recipe.objects.all()
-
-        queryset = Recipe.objects.annotate(
-            is_favorited=Exists(
-                Favorite.objects.filter(user=user, recipe_id=OuterRef("pk"))
-            ),
-            is_in_shopping_cart=Exists(
-                Purchase.objects.filter(user=user, recipe_id=OuterRef("pk"))
-            ),
-        )
-
-        if self.request.GET.get("is_favorited"):
-            return queryset.filter(is_favorited=True)
-        elif self.request.GET.get("is_in_shopping_cart"):
-            return queryset.filter(is_in_shopping_cart=True)
-
-        return queryset
+    def get_serializer_context(self):
+        context = super(RecipeViewSet, self).get_serializer_context()
+        context.update({"request": self.request})
+        return context
 
     @action(detail=True, permission_classes=[IsAuthenticated], methods=["get"])
     def favorite(self, request, pk=None):
