@@ -1,15 +1,15 @@
-from datetime import timedelta
+import os
 from pathlib import Path
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = (
-    "django-insecure-n2tldb(a2_u-g_n7%!ktg7vlg7khltcrd$o=8%ss90rls@!rw-"
+SECRET_KEY = os.environ.get(
+    "SECRET_KEY", "p&l%385148kslhtyn^##a1)ilz@4zqj=rq&agdol^##zgl9(vs"
 )
 
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["127.0.0.1", "localhost", "backend"]
 
 INSTALLED_APPS = [
     "users",
@@ -58,14 +58,24 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = "foodgram.wsgi.application"
-
-DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
+if os.environ.get("DB_ENGINE") == "django.db.backends.postgresql":
+    DATABASES = {
+        "default": {
+            "ENGINE": os.environ.get("DB_ENGINE"),
+            "NAME": os.environ.get("DB_NAME", "postgres"),
+            "USER": os.environ.get("POSTGRES_USER", "postgres"),
+            "PASSWORD": os.environ.get("POSTGRES_PASSWORD", "postgres"),
+            "HOST": os.environ.get("DB_HOST", "db"),
+            "PORT": os.environ.get("DB_PORT", 5432),
+        }
     }
-}
-
+else:
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.sqlite3",
+            "NAME": BASE_DIR.parent / "db.sqlite3",
+        }
+    }
 AUTH_PASSWORD_VALIDATORS = [
     {
         "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator",  # noqa
@@ -91,7 +101,6 @@ USE_L10N = True
 
 USE_TZ = True
 
-STATIC_URL = "/static/"
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
@@ -104,7 +113,6 @@ ITEMS_PER_PAGE = 6
 REST_FRAMEWORK = {
     "COERCE_DECIMAL_TO_STRING": False,
     "DEFAULT_AUTHENTICATION_CLASSES": [
-        "rest_framework.authentication.SessionAuthentication",
         "rest_framework.authentication.TokenAuthentication",
     ],
     "DEFAULT_FILTER_BACKENDS": [
@@ -127,8 +135,12 @@ DJOSER = {
 }
 
 
-MEDIA_URL = "/media/"
-MEDIA_ROOT = BASE_DIR / "media"
-
+MEDIA_URL = "/backend_media/"
+MEDIA_ROOT = BASE_DIR / "backend_media"
+STATIC_URL = "/backend_static/"
+STATIC_ROOT = BASE_DIR / "backend_static/"
 
 AUTH_USER_MODEL = "users.User"
+
+if os.environ.get("ENV_NAME") == "development":
+    DEBUG = True

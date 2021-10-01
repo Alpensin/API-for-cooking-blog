@@ -77,12 +77,6 @@ class Recipe(models.Model):
         through="IngredientForRecipe",
         through_fields=("recipe", "ingredient"),
     )
-    in_favorites = models.ManyToManyField(
-        User,
-        verbose_name="в избранном",
-        related_name="followed_recipes",
-        blank=True,
-    )
     tags = models.ManyToManyField(
         Tag,
         verbose_name="тэги",
@@ -126,6 +120,34 @@ class Recipe(models.Model):
             slug = slugify(self.title)
             self.slug = slug
         super().save(*args, **kwargs)
+
+
+class Favorite(models.Model):
+    user = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        verbose_name="В избранном",
+        related_name="favorites",
+    )
+    recipe = models.ForeignKey(
+        Recipe,
+        on_delete=models.CASCADE,
+        verbose_name="Избранный рецепт",
+        related_name="favorites",
+    )
+
+    class Meta:
+        verbose_name = "Избранный"
+        verbose_name_plural = "Избранные"
+        constraints = [
+            models.UniqueConstraint(
+                fields=["user", "recipe"],
+                name="unique_favorite_recipes",
+            )
+        ]
+
+    def __str__(self):
+        return f"Рецепт {self.recipe} в избранном у {self.user}"
 
 
 class IngredientForRecipe(models.Model):
@@ -181,6 +203,7 @@ class Follow(models.Model):
     )
 
     class Meta:
+        ordering = ("author",)
         verbose_name = "Подписка"
         verbose_name_plural = "Подписки"
         constraints = [
@@ -191,3 +214,35 @@ class Follow(models.Model):
 
     def __str__(self):
         return f"Подписка {self.user} на {self.author}"
+
+
+class Purchase(models.Model):
+    user = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        verbose_name="покупки",
+        related_name="purchases",
+    )
+    recipe = models.ForeignKey(
+        Recipe,
+        on_delete=models.CASCADE,
+        verbose_name="покупатели",
+        related_name="recipes_to_purchase",
+    )
+    date_added = models.DateTimeField(
+        auto_now_add=True,
+        verbose_name="Дата добавления",
+    )
+
+    class Meta:
+        ordering = ("-date_added",)
+        verbose_name = "Покупка"
+        verbose_name_plural = "Покупки"
+        constraints = [
+            models.UniqueConstraint(
+                fields=["user", "recipe"], name="unique_purchase_user_recipe"
+            )
+        ]
+
+    def __str__(self):
+        return f"Рецепт {self.recipe} в списке покупок у {self.user}"

@@ -1,6 +1,14 @@
 from django.contrib import admin
 
-from .models import Follow, Ingredient, IngredientForRecipe, Recipe, Tag
+from .models import (
+    Favorite,
+    Follow,
+    Ingredient,
+    IngredientForRecipe,
+    Purchase,
+    Recipe,
+    Tag,
+)
 
 
 class IngredientAdmin(admin.ModelAdmin):
@@ -20,6 +28,7 @@ class RecipeAdmin(admin.ModelAdmin):
         "name",
         "author",
         "text",
+        "is_favorited",
         "cooking_time",
         "slug",
     )
@@ -27,6 +36,10 @@ class RecipeAdmin(admin.ModelAdmin):
     list_filter = ("name", "author", "ingredients", "tags", "slug")
     empty_value_display = "-пусто-"
     prepopulated_fields = {"slug": ("name",)}
+
+    @staticmethod
+    def is_favorited(obj):
+        return obj.favorites.count()
 
 
 class TagAdmin(admin.ModelAdmin):
@@ -42,6 +55,18 @@ class FollowAdmin(admin.ModelAdmin):
     empty_value_display = "-пусто-"
 
 
+class FavoriteAdmin(admin.ModelAdmin):
+    list_display = ("user", "recipe")
+    empty_value_display = "-пусто-"
+
+
+class PurchaseAdmin(admin.ModelAdmin):
+    list_display = ("user", "recipe")
+    empty_value_display = "-пусто-"
+
+
+admin.site.register(Favorite, FavoriteAdmin)
+admin.site.register(Purchase, PurchaseAdmin)
 admin.site.register(Ingredient, IngredientAdmin)
 admin.site.register(Recipe, RecipeAdmin)
 admin.site.register(Tag, TagAdmin)
