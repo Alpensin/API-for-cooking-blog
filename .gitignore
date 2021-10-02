@@ -130,3 +130,9 @@ dmypy.json
 
 # .idea
 .idea
+.vscode/
+requirements_dev.txt
+run_frontend.sh
+curl_commands.txt
+media/
+backend_media/
