@@ -13,7 +13,6 @@ from api.serializers import (
     PurchaseSerializer,
     RecipeSerializer,
 )
-from backend.api.serializers import recipe_serializer
 from recipes.models import IngredientForRecipe, Purchase, Recipe
 
 
