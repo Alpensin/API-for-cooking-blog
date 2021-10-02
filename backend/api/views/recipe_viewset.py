@@ -1,6 +1,4 @@
-from django.db.models import Exists, OuterRef
 from django.http.response import HttpResponse
-from django_filters import rest_framework as filters
 from rest_framework import status, viewsets
 from rest_framework.decorators import action
 from rest_framework.generics import get_object_or_404
@@ -53,9 +51,8 @@ class RecipeViewSet(viewsets.ModelViewSet):
 
     @favorite.mapping.delete
     def delete_favorite(self, request, pk=None):
-        user = request.user
         recipe = get_object_or_404(Recipe, id=pk)
-        recipe.in_favorites = recipe.in_favorites.exclude(pk=user.pk)
+        recipe.favorites.set(recipe.favorites.exclude(pk=recipe.pk))
         return Response(status=status.HTTP_204_NO_CONTENT)
 
     @action(detail=True, permission_classes=[IsAuthenticated])
