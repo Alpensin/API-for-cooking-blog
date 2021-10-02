@@ -10,6 +10,8 @@ User = get_user_model()
 
 
 class FollowSerializer(serializers.ModelSerializer):
+    """Serializer for Follow model"""
+
     queryset = User.objects.all()
     user = serializers.PrimaryKeyRelatedField(queryset=queryset)
     author = serializers.PrimaryKeyRelatedField(queryset=queryset)
@@ -37,6 +39,8 @@ class FollowSerializer(serializers.ModelSerializer):
 
 
 class FollowerSerializer(CustomUserSerializer):
+    """Serializer for User model to serialize following information"""
+
     email = serializers.ReadOnlyField(source="author.email")
     id = serializers.ReadOnlyField(source="author.id")
     username = serializers.ReadOnlyField(source="author.username")

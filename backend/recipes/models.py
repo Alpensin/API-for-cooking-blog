@@ -117,7 +117,7 @@ class Recipe(models.Model):
 
     def save(self, *args, **kwargs):
         if not self.slug:
-            slug = slugify(self.title)
+            slug = slugify(self.name)
             self.slug = slug
         super().save(*args, **kwargs)
 

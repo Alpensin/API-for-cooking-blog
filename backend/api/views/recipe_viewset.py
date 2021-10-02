@@ -13,6 +13,7 @@ from api.serializers import (
     PurchaseSerializer,
     RecipeSerializer,
 )
+from backend.api.serializers import recipe_serializer
 from recipes.models import IngredientForRecipe, Purchase, Recipe
 
 
@@ -51,8 +52,9 @@ class RecipeViewSet(viewsets.ModelViewSet):
 
     @favorite.mapping.delete
     def delete_favorite(self, request, pk=None):
+        user = request.user
         recipe = get_object_or_404(Recipe, id=pk)
-        recipe.favorites.set(recipe.favorites.exclude(pk=recipe.pk))
+        user.favorites.filter(recipe=recipe).delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
     @action(detail=True, permission_classes=[IsAuthenticated])

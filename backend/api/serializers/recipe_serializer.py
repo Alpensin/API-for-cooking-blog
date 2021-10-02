@@ -1,3 +1,5 @@
+from decimal import Decimal
+
 from django.contrib.auth import get_user_model
 from django.db.models import F
 from django.shortcuts import get_object_or_404
@@ -6,11 +8,6 @@ from rest_framework import serializers
 from rest_framework.validators import UniqueTogetherValidator
 
 from api.custom_fields import CustomDecimalField
-from api.validators import (
-    CookingTimeIsPovitiveValidator,
-    IngredientsAmountIsPovitiveValidator,
-    UniqueIngredientsGivenValidator,
-)
 from recipes.models import (
     Favorite,
     Ingredient,
@@ -113,13 +110,6 @@ class AddRecipeSerializer(serializers.ModelSerializer):
             "text",
             "cooking_time",
         )
-        validators = {
-            "ingredients": (
-                UniqueIngredientsGivenValidator,
-                IngredientsAmountIsPovitiveValidator,
-            ),
-            "cooking_time": (CookingTimeIsPovitiveValidator,),
-        }
 
     def get_is_favorited(self, obj):
         request = self.context.get("request")
@@ -177,6 +167,24 @@ class AddRecipeSerializer(serializers.ModelSerializer):
         instance.image = validated_data.get("image", instance.image)
         instance.save()
         return instance
+
+    def validate(self, data):
+        ingredients = self.initial_data.get("ingredients")
+        cooking_time = self.initial_data.get("cooking_time")
+        for ingredient in ingredients:
+            if int(ingredient["amount"]) <= 0:
+                raise serializers.ValidationError(
+                    {
+                        "ingredients": (
+                            "Количество ингредиентов меньше или равно нулю"
+                        )
+                    }
+                )
+        if Decimal(cooking_time) <= 0:
+            raise serializers.ValidationError(
+                {"cooking_time": ("Задано отрицательное время приготовления")}
+            )
+        return data
 
     def to_representation(self, instance):
         recipes = RecipeSerializer(

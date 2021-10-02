@@ -11,7 +11,7 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         file_path = settings.BASE_DIR / "data" / "tags.csv"
-        with open(file_path, "r") as f:
+        with open(file_path, "r", encoding="utf-8") as f:
             tags = csv.reader(f)
             bulk_create_tags = (
                 Tag(name=tag[0], color=tag[2], slug=tag[1]) for tag in tags
