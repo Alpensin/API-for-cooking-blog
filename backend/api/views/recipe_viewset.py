@@ -85,22 +85,22 @@ class RecipeViewSet(viewsets.ModelViewSet):
     @action(detail=False, permission_classes=[IsAuthenticated])
     def download_shopping_cart(self, request):
         user = request.user
-        shopping_cart = user.purchases.all()
+        recipes = user.purchases.values_list("recipe", flat=True)
+        ingredients = IngredientForRecipe.objects.filter(
+            recipe__in=recipes
+        ).values_list(
+            "ingredient__name", "ingredient__measurement_unit", "amount"
+        )
         data = {}
-        for item in shopping_cart:
-            recipe = item.recipe
-            ingredients = IngredientForRecipe.objects.filter(recipe=recipe)
-            for ingredient in ingredients:
-                amount = ingredient.amount
-                name = ingredient.ingredient.name
-                measurement_unit = ingredient.ingredient.measurement_unit
-                if name not in data:
-                    data[name] = {
-                        "measurement_unit": measurement_unit,
-                        "amount": amount,
-                    }
-                else:
-                    data[name]["amount"] = data[name]["amount"] + amount
+        for ingredient in ingredients:
+            name, measurement_unit, amount = ingredient
+            if name not in data:
+                data[name] = {
+                    "measurement_unit": measurement_unit,
+                    "amount": amount,
+                }
+            else:
+                data[name]["amount"] += amount
 
         shopping_list = []
         for item in data:

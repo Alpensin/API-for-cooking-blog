@@ -1,12 +1,8 @@
-from enum import unique
-
 from colorfield.fields import ColorField
 from django.contrib.auth import get_user_model
 from django.core.validators import MinValueValidator
 from django.db import models
 from django.urls import reverse
-
-from .utils import slugify
 
 User = get_user_model()
 
@@ -115,12 +111,6 @@ class Recipe(models.Model):
     def get_absolute_url(self):
         return reverse("detail", kwargs={"slug": self.slug})
 
-    def save(self, *args, **kwargs):
-        if not self.slug:
-            slug = slugify(self.name)
-            self.slug = slug
-        super().save(*args, **kwargs)
-
 
 class Favorite(models.Model):
     user = models.ForeignKey(
@@ -220,13 +210,13 @@ class Purchase(models.Model):
     user = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
-        verbose_name="покупки",
+        verbose_name="покупатели",
         related_name="purchases",
     )
     recipe = models.ForeignKey(
         Recipe,
         on_delete=models.CASCADE,
-        verbose_name="покупатели",
+        verbose_name="покупки",
         related_name="recipes_to_purchase",
     )
     date_added = models.DateTimeField(

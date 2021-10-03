@@ -7,6 +7,9 @@ from drf_extra_fields.fields import Base64ImageField
 from rest_framework import serializers
 from rest_framework.validators import UniqueTogetherValidator
 
+from .ingredient_serializer import AddIngredientSerializer
+from .tag_serializer import TagSerializer
+from .user_serializer import CustomUserSerializer
 from api.custom_fields import CustomDecimalField
 from recipes.models import (
     Favorite,
@@ -16,10 +19,6 @@ from recipes.models import (
     Recipe,
     Tag,
 )
-
-from .ingredient_serializer import AddIngredientSerializer
-from .tag_serializer import TagSerializer
-from .user_serializer import CustomUserSerializer
 
 User = get_user_model()
 
@@ -171,6 +170,14 @@ class AddRecipeSerializer(serializers.ModelSerializer):
     def validate(self, data):
         ingredients = self.initial_data.get("ingredients")
         cooking_time = self.initial_data.get("cooking_time")
+        if ingredients is None:
+            raise serializers.ValidationError(
+                {"ingredients": ("Не выбран ни один ингредиент")}
+            )
+        if len(ingredients) > len(set(ingredients)):
+            raise serializers.ValidationError(
+                {"ingredients": ("Есть задвоения в выбранные ингредиентах")}
+            )
         for ingredient in ingredients:
             if int(ingredient["amount"]) <= 0:
                 raise serializers.ValidationError(
