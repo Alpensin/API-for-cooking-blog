@@ -1,5 +1,3 @@
-import base64
-
 from rest_framework.serializers import DecimalField
 
 

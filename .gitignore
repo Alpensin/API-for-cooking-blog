@@ -136,3 +136,4 @@ run_frontend.sh
 curl_commands.txt
 media/
 backend_media/
+*.todo
