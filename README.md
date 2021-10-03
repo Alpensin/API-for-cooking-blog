@@ -1,5 +1,40 @@
 # Учебный проект на Django + DRF.
 ## Цель проекта построить REST API.
+##### _Автор https://github.com/Alpensin_
+#### Для запуска проекта с помощью Docker:
+Из корневой директории склонированного проекта выполнить:
+```sh 
+cd infra
+```
+По умолчанию проект бэкенд будет работать в режиме ```DEBUG=False``` на БД ```SQLite```.
+Предполагается использование БД Postgres, для которой создаётся отдельный контейнер. Для работы с Postgres: 
+В директории ```infra``` создать ```.env``` файл для Docker со следующими переменными:
+```.env
+DB_ENGINE=django.db.backends.postgresql
+DB_NAME=postgres # имя базы данных
+POSTGRES_USER=postgres # логин для подключения к базе данных
+POSTGRES_PASSWORD=postgres # пароль для подключения к БД. Можно указать свой
+DB_HOST=db # название сервиса (контейнера)
+DB_PORT=5432 # TCP порт для подключения к БД
+```
+Также можно задать:
+```.env
+SECRET_KEY= # Ваш SECRET_KEY для Django
+ENV_NAME=development # Для работы в режиме DEBUG=True
+```
+После этого создаём и запускаем контейнеры _nginx, postgres, backend, frontend_:
+```sh
+docker-compose up -d --build
+```
+Когда контейнеры поднимуться выполним миграции:
+```sh
+docker-compose exec backend python manage.py makemigrations --noinput
+docker-compose exec backend python manage.py migrate --noinput
+```
+И создадим суперпользователя для администрирования Django:
+```sh
+docker-compose exec backend python manage.py createsuperuser
+```
 ### В данном проекте создан кулинарный сайт со следующим функционалом:
 - Проект доступен по IP или доменному имени.
 - Все сервисы и страницы доступны для пользователей в соответствии с их правами.
