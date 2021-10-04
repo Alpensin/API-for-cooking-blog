@@ -52,7 +52,6 @@ jobs:
           passphrase: ${{ secrets.PASSPHRASE }}
           stack_file_name: docker-compose.yaml
           script: |
-            sudo docker pull alpensin/foodgram-diplom
             sudo docker-compose stop
             sudo docker-compose rm backend
             touch .env
