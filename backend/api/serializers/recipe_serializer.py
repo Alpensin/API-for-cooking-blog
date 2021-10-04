@@ -170,7 +170,7 @@ class AddRecipeSerializer(serializers.ModelSerializer):
     def validate(self, data):
         ingredients = self.initial_data.get("ingredients")
         cooking_time = self.initial_data.get("cooking_time")
-        if ingredients is None:
+        if not ingredients:
             raise serializers.ValidationError(
                 {"ingredients": ("Не выбран ни один ингредиент")}
             )
