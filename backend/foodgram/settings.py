@@ -7,9 +7,9 @@ SECRET_KEY = os.environ.get(
     "SECRET_KEY", "p&l%385148kslhtyn^##a1)ilz@4zqj=rq&agdol^##zgl9(vs"
 )
 
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = ["127.0.0.1", "localhost", "backend"]
+ALLOWED_HOSTS = ["127.0.0.1", "localhost", "backend", "62.84.118.22"]
 
 INSTALLED_APPS = [
     "users",
