@@ -6,7 +6,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.environ.get(
     "SECRET_KEY", "p&l%385148kslhtyn^##a1)ilz@4zqj=rq&agdol^##zgl9(vs"
 )
-
+DATA_UPLOAD_MAX_MEMORY_SIZE = 15_728_640
 DEBUG = False
 
 ALLOWED_HOSTS = ["127.0.0.1", "localhost", "backend", "62.84.118.22"]
