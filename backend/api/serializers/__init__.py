@@ -8,4 +8,7 @@ from .recipe_serializer import (
     RecipeSerializer,
 )
 from .tag_serializer import TagSerializer  # noqa
-from .user_serializer import CustomUserSerializer  # noqa
+from .user_serializer import (  # noqa
+    CustomUserSerializer,
+    UserRegistrationSerializer,
+)
