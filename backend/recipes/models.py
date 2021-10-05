@@ -84,7 +84,6 @@ class Recipe(models.Model):
         decimal_places=1,
         validators=(MinValueValidator(0.1),),
     )
-    slug = models.SlugField("slug", unique=True)
 
     pub_date = models.DateTimeField(
         verbose_name="дата создания", auto_now_add=True
