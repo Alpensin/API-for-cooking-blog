@@ -1,10 +1,18 @@
 from django.contrib.auth import get_user_model
-from djoser.serializers import UserSerializer
+from djoser.serializers import UserCreateSerializer, UserSerializer
 from rest_framework import serializers, validators
 
 from recipes.models import Follow
 
 User = get_user_model()
+
+
+class UserRegistrationSerializer(UserCreateSerializer):
+    """To register new user"""
+
+    class Meta(UserCreateSerializer.Meta):
+        model = User
+        fields = ("email", "username", "first_name", "last_name", "password")
 
 
 class CustomUserSerializer(UserSerializer):
