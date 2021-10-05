@@ -94,7 +94,6 @@ class Recipe(models.Model):
         verbose_name_plural = "рецепты"
         indexes = [
             models.Index(fields=["name"]),
-            models.Index(fields=["slug"]),
             models.Index(fields=["pub_date"]),
         ]
         constraints = [
@@ -106,9 +105,6 @@ class Recipe(models.Model):
 
     def __str__(self):
         return self.name
-
-    def get_absolute_url(self):
-        return reverse("detail", kwargs={"slug": self.slug})
 
 
 class Favorite(models.Model):
