@@ -174,9 +174,9 @@ class AddRecipeSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError(
                 {"ingredients": ("Не выбран ни один ингредиент")}
             )
-        if len(ingredients) > len(set(ingredients)):
+        if len(ingredients) > len(set(k for k in ingredients)):
             raise serializers.ValidationError(
-                {"ingredients": ("Есть задвоения в выбранные ингредиентах")}
+                {"ingredients": ("Есть задвоения в выбранных ингредиентах")}
             )
         for ingredient in ingredients:
             if int(ingredient["amount"]) <= 0:
