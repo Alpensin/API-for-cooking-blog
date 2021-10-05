@@ -30,12 +30,10 @@ class RecipeAdmin(admin.ModelAdmin):
         "text",
         "is_favorited",
         "cooking_time",
-        "slug",
     )
-    search_fields = ("name", "author", "text", "slug")
-    list_filter = ("name", "author", "ingredients", "tags", "slug")
+    search_fields = ("name", "author", "text")
+    list_filter = ("name", "author", "ingredients", "tags")
     empty_value_display = "-пусто-"
-    prepopulated_fields = {"slug": ("name",)}
 
     @staticmethod
     def is_favorited(obj):
